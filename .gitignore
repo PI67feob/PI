@@ -1,0 +1,10 @@
+# https://dart.dev/tools/private-files
+# Created by `dart pub`
+.dart_tool/
+
+# Segredos — nunca versionar
+.env
+.env.local
+
+# Sistema
+.DS_Store
