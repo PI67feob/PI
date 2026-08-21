@@ -7,6 +7,6 @@ class Talhao {
   Area? area;
 
   String obterArea() {
-    return "$nome - $id - $ha - ${area?.nome}";
+    return " nome:$nome - id:$id - hectares:$ha - area:${area?.nome}";
   }
 }
