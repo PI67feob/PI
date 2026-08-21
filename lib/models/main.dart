@@ -1,16 +1,16 @@
 import 'class_area.dart';
 import 'class_talhao.dart';
 
-main() {
-  var area1 = new Area();
+void main() {
+  var area1 = Area();
   area1.id = 1;
   area1.nome = "Bela vista";
 
-  var talhao1 = new Talhao();
+  var talhao1 = Talhao();
   talhao1.nome = "cafe1";
   talhao1.id = 1;
   talhao1.ha = 4.44;
-  talhao1.area;
+  talhao1.area = area1;
 
   print(talhao1.obterArea());
 }
