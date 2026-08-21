@@ -10,7 +10,7 @@ main() {
   talhao1.nome = "cafe1";
   talhao1.id = 1;
   talhao1.ha = 4.44;
-  talhao1.area;
+  talhao1.area = area1;
 
   print(talhao1.obterArea());
 }
