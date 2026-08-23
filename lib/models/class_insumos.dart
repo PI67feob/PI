@@ -1,9 +1,6 @@
 class Insumos {
   String? nome;
-  String? id;
-  int? quantidade;
-  String? densidade;
+  int? id;
+  String? unidadeDeMedidda;
   String? tipo;
 }
-
-//densidade devemos colocar se sao litros ou kg
