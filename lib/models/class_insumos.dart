@@ -1,6 +1,6 @@
 class Insumos {
   String? nome;
   int? id;
-  String? unidadeDeMedidda;
+  String? unidadeDeMedida;
   String? tipo;
 }

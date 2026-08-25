@@ -6,7 +6,8 @@ class Talhao {
   double? ha;
   Area? area;
 
-  String obterArea() {
-    return " nome:$nome - id:$id - hectares:$ha - area:${area?.nome}";
+  // renomeado: o metodo devolve os dados do talhao, nao a area
+  String obterDados() {
+    return "nome:$nome - id:$id - hectares:$ha - area:${area?.nome}";
   }
 }
