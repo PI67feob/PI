@@ -1,0 +1,214 @@
+Coleta em campo — leitura por frente
+
+Base: relatório do questionário aplicado na fazenda (7 importantes + 20 secundárias, todas respondidas) Consolidação: João Hélio Situação: este documento reorganiza as respostas por unidade acadêmica. O relatório bruto continua sendo a fonte.
+
+Aviso: este levantamento contradiz o anterior
+
+O levantamento de 17/08 concluiu que a fazenda praticamente não registra nada e que os indicadores do projeto teriam de rodar sobre dados sintéticos.
+
+Isso estava errado. A propriedade tem agrônomo, dose por bula, calibração de bicos a cada aplicação, pluviômetro próprio, limite de vento e de temperatura para aplicar, e app de drone com registro de dose. O dado existe — só não está na ficha de papel.
+
+Quatro decisões precisam ser revistas antes do congelamento do schema. Estão listadas na última seção.
+
+1. Modelagem de Dados — Diogo
+O volume por talhão deixou de ser irrecuperável
+
+Duas respostas mudam o problema central do projeto:
+
+I5 — "sempre considerar volume de calda de 40 litros por ha" I5 — "todos os talhões da fazenda, totalizando 120 ha de área aplicável"
+
+Se o volume de calda é sempre 40 L/ha, então o volume aplicado em cada talhão é calculável: hectares × 40. Não precisa estar registrado — é derivável.
+
+Isso reabre a D1. A decisão deixa de ser "como lidar com dado irrecuperável" e passa a ser "armazenar o volume ou calcular na hora".
+
+Verificação que confirma ou derruba isso, e que precisa ser feita antes de 06/09:
+
+Ficha	Volume	÷ 40 L/ha	Hipótese
+03/02/2026	900 L	22,5 ha	Os talhões daquele lançamento somam 22,5 ha?
+(a citada)	1900 L	47,5 ha	Os talhões somam 47,5 ha?
+
+Se bater, o volume por talhão do histórico inteiro é reconstituível e o projeto ganha uma base de dados real. Se não bater, a regra dos 40 L/ha tem exceções que precisam ser mapeadas.
+
+Unidade de medida não pertence ao insumo
+
+S13 — "Litro, kg, unidade, Gramas, Ton, não há uma regra, ela sempre vem pela unidade que foi comprada"
+
+A unidade é atributo da compra, não do produto. O mesmo insumo pode chegar em tonelada numa nota e em quilo em outra.
+
+O campo unidadeDeMedida dentro de Insumo está no lugar errado. Ele pertence à nota fiscal ou ao item de compra.
+
+Tensão a resolver: a resposta I6 diz que a unidade da compra é a mesma da aplicação. Mas a aplicação é em litros de calda. Um adubo comprado em tonelada não é aplicado em tonelada. Vale reperguntar com exemplo concreto.
+
+Entidades novas
+Entidade	Origem
+RecomendacaoTecnica ou dose por bula	I4, S14 — o agrônomo define, a bula determina
+Compra / ItemNota	S13 — a unidade vive aqui, não no insumo
+Pluviometria	S15 — a fazenda mede chuva; é a base da regra de reaplicação
+Terceiro aplicador
+
+S4 — "Drone sim, o que é feito via bomba costal não"
+
+Existe bomba costal, além de trator e drone. O campo tipo de Aplicador tem no mínimo três valores.
+
+Segunda fonte de dados, confirmada
+
+S18 — "não fichas de aplicação e no App do Drone" S19 — "Produto, dose, data, mapa de voo"
+
+O app do drone registra dose — campo que a ficha de papel tem impresso e nunca preenche. São seis aplicações já feitas (S20).
+
+Isso não é suposição: é fonte real, com campos conhecidos. E significa que o modelo precisa aceitar aplicação vinda de duas origens com granularidade diferente.
+
+Destino de resíduo
+
+S7 — "é aplicado em bordadura ou talhão subsequente e lançado para o tal"
+
+Existe prática de atribuir sobra a outro talhão. Se o sistema for registrar isso, a ligação aplicação–talhão precisa distinguir volume planejado de volume de resíduo. Ou não distinguir, e isso vira decisão declarada.
+
+E aparece uma coisa nova: bordadura. É subdivisão do talhão? Faixa de borda? Precisa ser esclarecido antes de modelar Talhao.
+
+2. POO / Backend — João Hélio e Cristiano
+Três regras de negócio concretas apareceram
+
+Isso resolve um problema real do DoD: até agora não havia regra de negócio de verdade para pôr em services/.
+
+Regra 1 — Volume de calda volumeCalda = hectares × 40 Validação: o volume declarado numa aplicação deve bater com a soma das áreas × 40. Divergência é indício de erro ou de desperdício.
+
+Regra 2 — Reaplicação por chuva
+
+I7 — "Se chuva após 3 horas de aplicação não reaplica. Se reaplicado sim."
+
+Chuva em menos de 3 horas → reaplicar. Mais de 3 horas → não. A fazenda tem pluviômetro (S15), então o dado de entrada existe.
+
+Essa é a validação mais interessante do projeto: cruza aplicação, horário e chuva.
+
+Regra 3 — Compra com margem
+
+I1 — "as compras são feitas sempre com 5% a menos do que calculamos usar"
+
+quantidadeComprada = quantidadeCalculada × 0,95
+
+Correções nas classes
+Classe	O que muda
+Insumo	Tirar unidadeDeMedida — pertence à compra (S13)
+Aplicador	tipo com três valores: trator, drone, bomba costal (S4)
+Aplicador	Capacidade é máximo, não valor fixo — renomear para capacidadeMaximaL (I3)
+Aplicacao	Precisa de horário, não só data — a regra das 3 horas depende disso
+
+I3 — "Tem capacidade máxima, não fixa e não necessariamente são preenchidos completamente"
+
+Ou seja: capacidade é limite, e o volume real da aplicação é outro campo.
+
+Caminho infeliz — casos reais para os testes
+
+O DoD exige teste de caso normal, limite e inválido. Agora há casos com origem no campo:
+
+Volume declarado não bate com área × 40
+Aplicação em talhão com hectares zero ou nulo
+Aplicação sem aplicador informado
+Chuva registrada antes do horário da aplicação
+Insumo com unidade que não converte para a unidade de aplicação
+3. Lógica de Programação — Joaquim
+
+O algoritmo do projeto deixou de ser hipotético. Há uma cadeia de cálculo completa:
+
+área do talhão (ha)
+   ↓ × 40 L/ha
+volume de calda necessário
+   ↓ dose da bula por produto
+quantidade de cada insumo
+   ↓ conversão de unidade
+quantidade na unidade de compra
+   ↓ × 0,95
+quantidade a comprar
+   ↓ preço da nota
+custo
+Conversão de unidades é obrigatória
+
+S13 — "Litro, kg, unidade, Gramas, Ton, não há uma regra"
+
+Cinco unidades diferentes, sem regra fixa. O algoritmo precisa converter, e para produto sólido isso exige densidade — que ninguém informou.
+
+Pergunta que falta: um produto comprado em quilo entra na calda como quanto? Existe fator, ou a bula já diz em gramas por litro de calda?
+
+Conferência aritmética disponível
+
+I2 — "usamos 13 produtos, totalizando 218 litros de produtos e 782 litros de água"
+
+218 + 782 = 1000 L de calda, exatos. Isso permite testar a lógica:
+
+1000 L ÷ 40 L/ha = 25 ha por tanque
+120 ha ÷ 25 ha = 4,8 tanques para a fazenda inteira
+218 L ÷ 25 ha = 8,72 L de produto por hectare
+
+Se o algoritmo reproduzir esses números a partir das doses da bula, ele está correto. É o melhor caso de teste que o projeto tem.
+
+Fluxograma do dado
+
+O DoD pede o percurso do dado até o BI. Agora ele tem duas entradas:
+
+ficha de papel (trator, bomba costal) ──┐
+                                        ├──→ banco ──→ BI
+app do drone (produto, dose, mapa) ─────┘
+
+As duas têm granularidade diferente. O fluxograma precisa mostrar isso, não fingir que é uma fonte só.
+
+4. Business Intelligence — Samuel e Bruno
+O painel pode rodar sobre dado real
+
+A conclusão anterior — de que o custo por hectare só funcionaria com seeds sintéticos — caiu. Os quatro componentes existem:
+
+Componente	Situação	Origem
+Hectares por talhão	Disponível	Mapas por área
+Volume de calda	Calculável	40 L/ha × área
+Quantidade por produto	Calculável	Dose da bula
+Preço	Disponível	Notas fiscais
+
+A D4 precisa ser reaberta. Seeds sintéticos deixam de ser necessários para o indicador principal.
+
+O que é desperdício nesta fazenda, e o que não é
+
+A investigação de perdas produziu um resultado útil pela negativa. Não há perda por:
+
+Fonte investigada	Resposta
+Vento / deriva	Não aplicam com vento acima do limite (S16)
+Calor extremo	Não aplicam com calor extremo (S17)
+Trepidação no trajeto	Não (S9)
+Validade vencida	Compras pontuais evitam (S12)
+Tríplice lavagem	Água aproveitada na calda (S8)
+Trator atolado	Aplicam no dia seguinte (S3)
+Adubo empedrado	Não descartam, mudam o método (S10)
+Sobra de calda	Aplicada em bordadura ou talhão seguinte (S7)
+
+As perdas reais são estas quatro:
+
+Frasco inteiro na mistura (I1) — "embalagens na qual na mistura sobrariam muito pouco colocamos todo o frasco". Sobredose deliberada, não registrada. É a mais mensurável: dá para calcular a diferença entre a dose da bula e o que foi efetivamente aplicado.
+Vazamento e bico entupido (S2) — "Hoje não é relatado"
+Descarte por erro de receita (S6) — "Chegamos a descartar no passado e, não foi anotado"
+Reaplicação por chuva (I7) — a primeira aplicação vira perda total
+
+Os quatro têm a mesma característica: acontecem e não são registrados. Esse é o indicador que o projeto entrega — e agora com números, não com estimativa.
+
+Perda por eficácia
+
+S11 — "Sim", produto perde eficácia por ficar em lugar quente
+
+Confirmado, mas sem quantificação. Vale perguntar se já houve caso de reaplicar por produto fraco.
+
+Base do hectare — contradição a resolver
+
+I5 — "120 ha de área aplicável"
+
+"Área aplicável" sugere área tratada, não perímetro. Mas a resposta anterior sobre a base do hectare foi polígono.
+
+Os dois números não podem ser o mesmo. Se os mapas somam mais de 120 ha, a diferença é reserva, APP e carreador — e o denominador do custo por hectare precisa usar os 120, não o total do perímetro.
+
+Isso muda o indicador principal. Precisa ser confirmado antes de qualquer medida DAX.
+
+5. Decisões que precisam ser revistas
+#	Situação anterior	O que mudou
+D1	Volume por talhão irrecuperável	Calculável por 40 L/ha × área. Decisão passa a ser armazenar ou derivar
+D3	Estoque como funcionalidade nova	A fazenda calcula consumo e compra com margem de 5%. Existe planejamento — o estoque tem base maior do que parecia
+D4	BI dependeria de seeds sintéticos	Dado real disponível. Seeds deixam de ser necessários para o indicador principal
+D7	Hectare = polígono	I5 fala em "área aplicável" de 120 ha. Contradição a resolver
+
+As decisões D2, D5, D6 e D9 seguem como estavam.
