@@ -1,4 +1,4 @@
-import 'class_area.dart';
+import 'package:caderno_fazenda/models/area.dart';
 
 class Talhao {
   String? nome;
