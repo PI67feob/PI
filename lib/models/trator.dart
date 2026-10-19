@@ -14,8 +14,14 @@ class Trator extends Aplicador {
   String get tipo => 'trator';
 
   @override
-  String descreverCapacidade() =>
-      'Trator ${modelo ?? id}: tanque de até $capacidadeMaximaTexto';
+  String descreverCapacidade() {
+    final nome = (modelo ?? id) != null ? 'Trator ${modelo ?? id}' : 'Trator';
+    final temCapacidade =
+        capacidadeMaximaL != null || capacidadeMaximaKg != null;
+    return temCapacidade
+        ? '$nome: tanque de até $capacidadeMaximaTexto'
+        : '$nome: tanque com capacidade não informada';
+  }
 
   @override
   String origemDoRegistro() => 'ficha de papel';

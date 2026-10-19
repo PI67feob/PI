@@ -14,9 +14,16 @@ class BombaCostal extends Aplicador {
   String get tipo => 'bomba costal';
 
   @override
-  String descreverCapacidade() =>
-      'Bomba costal ${modelo ?? id}: reservatório de até '
-      '$capacidadeMaximaTexto nas costas do operador';
+  String descreverCapacidade() {
+    final nome = (modelo ?? id) != null
+        ? 'Bomba costal ${modelo ?? id}'
+        : 'Bomba costal';
+    final temCapacidade =
+        capacidadeMaximaL != null || capacidadeMaximaKg != null;
+    return temCapacidade
+        ? '$nome: reservatório de até $capacidadeMaximaTexto nas costas do operador'
+        : '$nome: reservatório com capacidade não informada nas costas do operador';
+  }
 
   @override
   String origemDoRegistro() => 'ficha de papel';

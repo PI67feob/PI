@@ -80,5 +80,50 @@ void main() {
         'Trator 4: tanque de até 450 L',
       );
     });
+
+    test('sem capacidade, a descricao informa sem o "ate"', () {
+      expect(
+        Trator(id: 1).descreverCapacidade(),
+        'Trator 1: tanque com capacidade não informada',
+      );
+      expect(
+        Drone(modelo: 'DJI').descreverCapacidade(),
+        'Drone DJI: capacidade não informada por voo',
+      );
+      expect(
+        BombaCostal(modelo: 'Jacto').descreverCapacidade(),
+        'Bomba costal Jacto: reservatório com capacidade não informada nas costas do operador',
+      );
+    });
+
+    test('sem modelo e sem id, nao aparece "null"', () {
+      expect(
+        Trator(capacidadeMaximaL: 600).descreverCapacidade(),
+        'Trator: tanque de até 600 L',
+      );
+      expect(
+        Drone(capacidadeMaximaL: 70).descreverCapacidade(),
+        'Drone: até 70 L por voo',
+      );
+      expect(
+        BombaCostal(capacidadeMaximaL: 20).descreverCapacidade(),
+        'Bomba costal: reservatório de até 20 L nas costas do operador',
+      );
+    });
+
+    test('sem identificacao e sem capacidade, nao exibe null nem "ate"', () {
+      expect(
+        Trator().descreverCapacidade(),
+        'Trator: tanque com capacidade não informada',
+      );
+      expect(
+        Drone().descreverCapacidade(),
+        'Drone: capacidade não informada por voo',
+      );
+      expect(
+        BombaCostal().descreverCapacidade(),
+        'Bomba costal: reservatório com capacidade não informada nas costas do operador',
+      );
+    });
   });
 }
