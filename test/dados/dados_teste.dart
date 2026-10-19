@@ -2,6 +2,8 @@
 import 'package:caderno_fazenda/models/talhao.dart';
 import 'package:caderno_fazenda/models/area.dart';
 import 'package:caderno_fazenda/models/aplicador.dart';
+import 'package:caderno_fazenda/models/bomba_costal.dart';
+import 'package:caderno_fazenda/models/drone.dart';
 import 'package:caderno_fazenda/models/insumo.dart';
 
 //====================================AREAS===================================================
@@ -35,112 +37,101 @@ Talhao cafeVelho(Area s) {
 //area s nome da funcao, sempre atribuir o objeto a ela
 //=================================APLICADOR====================
 Aplicador drone() {
-  return Aplicador(
+  return Drone(
     id: 1,
     modelo: "DJI",
     capacidadeMaximaL: 70,
     capacidadeMaximaKg: 70,
-    tipo: "drone",
   );
 }
 
 Aplicador costal1() {
-  return Aplicador(
+  return BombaCostal(
     id: 2,
     modelo: "Jacto",
     capacidadeMaximaL: 20,
     capacidadeMaximaKg: 20,
-    tipo: "bomba costal",
   );
 }
 
 Aplicador costal2() {
-  return Aplicador(
+  return BombaCostal(
     id: 3,
     modelo: "Jacto",
     capacidadeMaximaL: 20,
     capacidadeMaximaKg: 20,
-    tipo: "bomba costal",
   );
 }
 
 Aplicador costal3() {
-  return Aplicador(
+  return BombaCostal(
     id: 4,
     modelo: "Jacto",
     capacidadeMaximaL: 20,
     capacidadeMaximaKg: 20,
-    tipo: "bomba costal",
   );
 }
 
 Aplicador costal4() {
-  return Aplicador(
+  return BombaCostal(
     id: 5,
     modelo: "Jacto",
     capacidadeMaximaL: 20,
     capacidadeMaximaKg: 20,
-    tipo: "bomba costal",
   );
 }
 
 Aplicador costal5() {
-  return Aplicador(
+  return BombaCostal(
     id: 6,
     modelo: "Jacto",
     capacidadeMaximaL: 20,
     capacidadeMaximaKg: 20,
-    tipo: "bomba costal",
   );
 }
 
 Aplicador costal6() {
-  return Aplicador(
+  return BombaCostal(
     id: 7,
     modelo: "Jacto",
     capacidadeMaximaL: 20,
     capacidadeMaximaKg: 20,
-    tipo: "bomba costal",
   );
 }
 
 Aplicador costal7() {
-  return Aplicador(
+  return BombaCostal(
     id: 8,
     modelo: "Jacto",
     capacidadeMaximaL: 20,
     capacidadeMaximaKg: 20,
-    tipo: "bomba costal",
   );
 }
 
 Aplicador costal8() {
-  return Aplicador(
+  return BombaCostal(
     id: 9,
     modelo: "Jacto",
     capacidadeMaximaL: 20,
     capacidadeMaximaKg: 20,
-    tipo: "bomba costal",
   );
 }
 
 Aplicador costal9() {
-  return Aplicador(
+  return BombaCostal(
     id: 10,
     modelo: "Jacto",
     capacidadeMaximaL: 20,
     capacidadeMaximaKg: 20,
-    tipo: "bomba costal",
   );
 }
 
 Aplicador costal10() {
-  return Aplicador(
+  return BombaCostal(
     id: 11,
     modelo: "Jacto",
     capacidadeMaximaL: 20,
     capacidadeMaximaKg: 20,
-    tipo: "bomba costal",
   );
 }
 
