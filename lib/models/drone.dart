@@ -1,7 +1,7 @@
 import 'package:caderno_fazenda/models/aplicador.dart';
 
 /// Drone de pulverização. As aplicações ficam registradas no app do drone
-/// (produto, dose, data e mapa de voo).
+/// (produto, dose, data e mapa de voo) e também na ficha de papel.
 class Drone extends Aplicador {
   Drone({
     super.id,
@@ -18,5 +18,5 @@ class Drone extends Aplicador {
       'Drone ${modelo ?? id}: até $capacidadeMaximaTexto por voo';
 
   @override
-  String origemDoRegistro() => 'app do drone';
+  String origemDoRegistro() => 'app do drone e ficha de papel';
 }

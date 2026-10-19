@@ -40,7 +40,11 @@ void main() {
         for (var aplicador in aplicadores) aplicador.origemDoRegistro(),
       ];
 
-      expect(origens, ['ficha de papel', 'app do drone', 'ficha de papel']);
+      expect(origens, [
+        'ficha de papel',
+        'app do drone e ficha de papel',
+        'ficha de papel',
+      ]);
     });
 
     test('tipo vem da subclasse e bate com os valores do banco', () {
