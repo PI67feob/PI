@@ -1,6 +1,6 @@
 import 'package:caderno_fazenda/models/aplicador.dart';
 
-/// Trator com tanque de calda. Na fazenda é identificado por número e as
+/// Trator usado em operações agrícolas. Na fazenda é identificado por número e as
 /// aplicações são anotadas na ficha de papel.
 class Trator extends Aplicador {
   Trator({
@@ -19,8 +19,8 @@ class Trator extends Aplicador {
     final temCapacidade =
         capacidadeMaximaL != null || capacidadeMaximaKg != null;
     return temCapacidade
-        ? '$nome: tanque de até $capacidadeMaximaTexto'
-        : '$nome: tanque com capacidade não informada';
+        ? '$nome: compartimento de até $capacidadeMaximaTexto'
+        : '$nome: compartimento com capacidade não informada';
   }
 
   @override

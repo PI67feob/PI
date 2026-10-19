@@ -5,7 +5,9 @@ import 'package:caderno_fazenda/models/trator.dart';
 import 'package:test/test.dart';
 
 void main() {
-  var trator = Trator(id: 1, capacidadeMaximaL: 600);
+  // Trator sem capacidade nos dados principais: reflete a realidade da fazenda,
+  // onde o trator é identificado por número sem capacidade registrada nos documentos.
+  var trator = Trator(id: 1);
   var drone = Drone(
     id: 2,
     modelo: "DJI",
@@ -28,7 +30,7 @@ void main() {
       ];
 
       expect(descricoes, [
-        'Trator 1: tanque de até 600 L',
+        'Trator 1: compartimento com capacidade não informada',
         'Drone DJI: até 70 L / 70 kg por voo',
         'Bomba costal Jacto: reservatório de até 20 L / 20 kg nas costas do operador',
       ]);
@@ -74,17 +76,18 @@ void main() {
       expect(Trator(id: 9).capacidadeMaximaTexto, 'não informada');
     });
 
-    test('sem modelo, a descricao usa o id', () {
+    test('sem modelo, a descricao usa o id (exemplo ficticio)', () {
+      // Exemplo declaradamente fictício: a capacidade do trator não consta dos documentos.
       expect(
         Trator(id: 4, capacidadeMaximaL: 450).descreverCapacidade(),
-        'Trator 4: tanque de até 450 L',
+        'Trator 4: compartimento de até 450 L',
       );
     });
 
     test('sem capacidade, a descricao informa sem o "ate"', () {
       expect(
         Trator(id: 1).descreverCapacidade(),
-        'Trator 1: tanque com capacidade não informada',
+        'Trator 1: compartimento com capacidade não informada',
       );
       expect(
         Drone(modelo: 'DJI').descreverCapacidade(),
@@ -97,9 +100,10 @@ void main() {
     });
 
     test('sem modelo e sem id, nao aparece "null"', () {
+      // Exemplo declaradamente fictício para testar capacidade sem identificador
       expect(
         Trator(capacidadeMaximaL: 600).descreverCapacidade(),
-        'Trator: tanque de até 600 L',
+        'Trator: compartimento de até 600 L',
       );
       expect(
         Drone(capacidadeMaximaL: 70).descreverCapacidade(),
@@ -114,7 +118,7 @@ void main() {
     test('sem identificacao e sem capacidade, nao exibe null nem "ate"', () {
       expect(
         Trator().descreverCapacidade(),
-        'Trator: tanque com capacidade não informada',
+        'Trator: compartimento com capacidade não informada',
       );
       expect(
         Drone().descreverCapacidade(),

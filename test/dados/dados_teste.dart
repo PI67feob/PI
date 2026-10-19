@@ -40,6 +40,7 @@ Aplicador drone() {
   return Drone(
     id: 1,
     modelo: "DJI",
+    // 70 L / 70 kg mantido conforme dados de teste da equipe (briefing cita 60 L / 70 kg)
     capacidadeMaximaL: 70,
     capacidadeMaximaKg: 70,
   );
